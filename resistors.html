@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>E12 Resistor Labels</title>
   <style>
     * { font-family: sans-serif; }
     .cell { width: 7.5cm; height: 8cm; float: left; border: 1px dashed lightgrey; border-collapse: collapse; }
     .label { margin: 12px; margin-left: 6px; font-size: 4.5rem; line-height: 4rem; margin-bottom: 24px; }
     .colors { display: flex; margin-left: 12px; }
     .color { display: inline-block; width: 2.5rem; height: 2.5rem; text-align: center; box-sizing: border-box; border: 2px solid white; }
-    .tolerance { font-size: 1.3rem; display: flex; justify-content: center; align-items: center; background-color: #CCC; }
+    .tolerance { font-size: 1.3rem; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 0 0 1000px #CCC; }
     @media print {
       .cell {
         break-inside: avoid-page;
@@ -64,14 +64,10 @@
       for(const e12 of e12s) {
         let value = Math.round(decade.value * e12.value);
         if(value >= 1000 && value < 1000000) {
-          const prefix = Math.floor(value / 1000);
-          const suffix = Math.floor((value % 1000) / 100);
-          value = prefix + "k" + (suffix !== 0 ? suffix : '');
+          value = value / 1000 + "k";
         }
         if(value >= 100000 && value < 10000000000) {
-          const prefix = Math.floor(value / 1000000);
-          const suffix = Math.floor((value % 1000000) / 100000);
-          value = prefix + "M" + (suffix !== 0 ? suffix : '');
+          value = value / 1000000 + "M";
         }
         const four = e12.bands + '-' + decade.four;
         const fourColor = four.split('-').map(color => `<div class="color" style='box-shadow: inset 0 0 0 1000px ${colors[color] || color}'></div>`).join('');

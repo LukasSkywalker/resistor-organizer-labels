@@ -7,12 +7,16 @@
   <title>Document</title>
   <style>
     * { font-family: sans-serif; }
-    body { display: flex; flex-wrap: wrap; }
-    .cell { width: 7.5cm; height: 8cm; border: 1px dashed lightgrey; border-collapse: collapse; }
+    .cell { width: 7.5cm; height: 8cm; float: left; border: 1px dashed lightgrey; border-collapse: collapse; }
     .label { margin: 12px; margin-left: 6px; font-size: 4.5rem; line-height: 4rem; margin-bottom: 24px; }
     .colors { display: flex; margin-left: 12px; }
     .color { display: inline-block; width: 2.5rem; height: 2.5rem; text-align: center; box-sizing: border-box; border: 2px solid white; }
     .tolerance { font-size: 1.3rem; display: flex; justify-content: center; align-items: center; background-color: #CCC; }
+    @media print {
+      .cell {
+        break-inside: avoid-page;
+      }
+    }
   </style>
 </head>
 <body>

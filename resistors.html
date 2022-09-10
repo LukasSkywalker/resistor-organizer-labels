@@ -70,12 +70,12 @@
           value = prefix + "M" + (suffix !== 0 ? suffix : '');
         }
         const four = e12.bands + '-' + decade.four;
-        const fourColor = four.split('-').map(color => `<div class="color" style='background-color: ${colors[color] || color}'></div>`).join('');
+        const fourColor = four.split('-').map(color => `<div class="color" style='box-shadow: inset 0 0 0 1000px ${colors[color] || color}'></div>`).join('');
         let five = e12.bands + '-' + decade.five;
         if(decade.value == 10) {
           five = 'black-' + five;
         }
-        const fiveColor = five.split('-').map(color => `<div class="color" style='background-color: ${colors[color] || color}'></div>`).join('');
+        const fiveColor = five.split('-').map(color => `<div class="color" style='box-shadow: inset 0 0 0 1000px ${colors[color] || color}'></div>`).join('');
 
         document.write(
           `<div class="cell">` +

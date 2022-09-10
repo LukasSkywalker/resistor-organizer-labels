@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * { font-family: sans-serif; }
+    body { display: flex; flex-wrap: wrap; }
+    .cell { width: 7.5cm; height: 8cm; border: 1px dashed black; }
+    .label { margin: 12px; margin-left: 6px; font-size: 4.5rem; line-height: 4rem; margin-bottom: 24px; }
+    .colors { display: flex; margin-left: 12px; }
+    .color { display: inline-block; width: 2.5rem; height: 2.5rem; text-align: center; box-sizing: border-box; border: 2px solid white; }
+    .tolerance { font-size: 1.3rem; display: flex; justify-content: center; align-items: center; background-color: #CCC; }
+  </style>
+</head>
+<body>
+  <script>
+    const tolerances = [
+      { color: 'grey', tolerance: 0.05 },
+      { color: 'violet', tolerance: 0.1 },
+      { color: 'blue', tolerance: 0.25 },
+      { color: 'green', tolerance: 0.5 },
+      { color: 'brown', tolerance: 1 },
+      { color: 'red', tolerance: 2 },
+      { color: 'gold', tolerance: 5 },
+      { color: 'silver', tolerance: 10 },
+    ];
+    const colors = {
+      brown: '#a0522d',
+      violet: '#8a2be2',
+      blue: '#1e90ff',
+      red: '#fe2712'
+    };
+    const e12s = [
+      { value: 1.0, bands: 'brown-black' },
+      { value: 1.2, bands: 'brown-red' },
+      { value: 1.5, bands: 'brown-green' },
+      { value: 1.8, bands: 'brown-grey' },
+      { value: 2.2, bands: 'red-red' },
+      { value: 2.7, bands: 'red-violet' },
+      { value: 3.3, bands: 'orange-orange' },
+      { value: 3.9, bands: 'orange-white' },
+      { value: 4.7, bands: 'yellow-violet' },
+      { value: 5.6, bands: 'green-blue' },
+      { value: 6.8, bands: 'blue-grey' },
+      { value: 8.2, bands: 'grey-red' },
+    ];
+    const decades = [
+      { value: 10, four: 'black', five: '' },
+      { value: 100, four: 'brown', five: 'black-black' },
+      { value: 1000, four: 'red', five: 'black-brown' },
+      { value: 10000, four: 'orange', five: 'black-red' },
+      { value: 100000, four: 'yellow', five: 'black-orange'},
+      { value: 1000000, four: 'green', five: 'black-yellow' } 
+    ];
+
+    for(const decade of decades) {
+      for(const e12 of e12s) {
+        let value = Math.round(decade.value * e12.value);
+        if(value >= 1000 && value < 1000000) {
+          const prefix = Math.floor(value / 1000);
+          const suffix = Math.floor((value % 1000) / 100);
+          value = prefix + "k" + (suffix !== 0 ? suffix : '');
+        }
+        if(value >= 100000 && value < 10000000000) {
+          const prefix = Math.floor(value / 1000000);
+          const suffix = Math.floor((value % 1000000) / 100000);
+          value = prefix + "M" + (suffix !== 0 ? suffix : '');
+        }
+        const four = e12.bands + '-' + decade.four;
+        const fourColor = four.split('-').map(color => `<div class="color" style='background-color: ${colors[color] || color}'></div>`).join('');
+        let five = e12.bands + '-' + decade.five;
+        if(decade.value == 10) {
+          five = 'black-' + five;
+        }
+        const fiveColor = five.split('-').map(color => `<div class="color" style='background-color: ${colors[color] || color}'></div>`).join('');
+
+        document.write(
+          `<div class="cell">` +
+            `<div class="label">${value} Ω</div>` +
+            `<div class="colors">${fourColor}<div class="color tolerance">T</div></div>` +
+            `<div class="colors">${fiveColor}<div class="color tolerance">T</div></div>` +
+          `</div>`
+        );
+      }
+    }
+  </script>
+</body>
+</html>

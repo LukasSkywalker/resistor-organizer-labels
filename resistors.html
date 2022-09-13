@@ -7,16 +7,24 @@
   <title>E12 Resistor Labels</title>
   <style>
     * { font-family: sans-serif; }
-    .row { display: flex; margin: 0.5cm; float: left; margin-right: 1cm }
-    .row .label { font-size: 1rem; line-height: 0.8rem; margin: 0; width: 1.6cm; }
-    .row .color { width: 1rem; height: 1rem; border: 1px solid white; }
-    .row .tolerance { font-size: 0.6rem; }
+    .row { display: flex; margin: 0.5cm; float: left; margin-right: 1cm; border-bottom: 1.5px solid black; padding-bottom: 6px; }
+    .row .label { font-size: 1.3rem; line-height: 1rem; margin: 0; width: 2cm; }
+    .color, .tolerance {
+      text-shadow: 2px 2px 3px white, 2px -2px 3px white, -2px -2px 3px white, -2px 2px 3px white,
+        2px 2px 5px white, 2px -2px 5px white, -2px -2px 5px white, -2px 2px 5px white;
+    }
+    .row .color, .row .tolerance { font-size: 0.8rem; width: 1.3rem; height: 1.3rem; border: 1px solid white; }
     .cell { width: 7.5cm; height: 8cm; float: left; border: 1px dashed lightgrey; border-collapse: collapse; }
     .label { margin: 12px; margin-left: 6px; font-size: 4.5rem; line-height: 4rem; margin-bottom: 24px; }
     .colors { display: flex; margin-left: 12px; }
-    .color { display: inline-block; width: 2.5rem; height: 2.5rem; text-align: center; box-sizing: border-box; border: 2px solid white; }
-    .tolerance { font-size: 1.3rem; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 0 0 1000px #CCC; }
+    .color, .tolerance { display: flex; justify-content: center; align-items: center;
+      width: 2.5rem; height: 2.5rem; text-align: center; box-sizing: border-box;
+      font-size: 1.3rem; border: 2px solid white; }
+    .tolerance { box-shadow: inset 0 0 0 1000px #CCC; }
     @media print {
+      .decade {
+        break-before: page;
+      }
       .cell {
         break-inside: avoid-page;
       }
@@ -25,6 +33,7 @@
 </head>
 <body>
   <script>
+    const clearfix = "<div style='clear: both; margin-bottom: 48px; break-before: page'></div>";
     const tolerances = [
       { color: 'grey', tolerance: 0.05 },
       { color: 'violet', tolerance: 0.1 },
@@ -38,7 +47,7 @@
     const colors = {
       brown: '#a0522d',
       violet: '#8a2be2',
-      blue: '#1e90ff',
+      /*blue: '#1e90ff',*/
       red: '#fe2712'
     };
     const e12s = [
@@ -48,16 +57,25 @@
       { value: 1.8, bands: 'brown-grey' },
       { value: 2.0, bands: 'red-black' },
       { value: 2.2, bands: 'red-red' },
+      { value: 2.4, bands: 'red-yellow' },
       { value: 2.7, bands: 'red-violet' },
+      { value: 3.0, bands: 'orange-black' },
       { value: 3.3, bands: 'orange-orange' },
+      { value: 3.6, bands: 'orange-blue' },
       { value: 3.9, bands: 'orange-white' },
+      { value: 4.3, bands: 'yellow-orange' },
       { value: 4.7, bands: 'yellow-violet' },
+      { value: 5.1, bands: 'green-brown' },
       { value: 5.6, bands: 'green-blue' },
       { value: 6.8, bands: 'blue-grey' },
+      { value: 6.2, bands: 'blue-red' },
+      { value: 7.5, bands: 'violet-green' },
       { value: 8.2, bands: 'grey-red' },
+      { value: 9.1, bands: 'white-brown' }
     ];
     const decades = [
-      { value: 10, four: 'black', five: '' },
+      { value: 1, four: 'gold', five: 'black-silver' },
+      { value: 10, four: 'black', five: 'black-gold' },
       { value: 100, four: 'brown', five: 'black-black' },
       { value: 1000, four: 'red', five: 'black-brown' },
       { value: 10000, four: 'orange', five: 'black-red' },
@@ -65,9 +83,13 @@
       { value: 1000000, four: 'green', five: 'black-yellow' } 
     ];
 
+    let table = '';
+    let labels = '';
+
     for(const decade of decades) {
+      table += '<div class="decade">';
       for(const e12 of e12s) {
-        let value = Math.round(decade.value * e12.value);
+        let value = decade.value > 1 ? Math.round(decade.value * e12.value) : decade.value * e12.value;
         if(value >= 1000 && value < 1000000) {
           value = value / 1000 + "k";
         }
@@ -75,41 +97,25 @@
           value = value / 1000000 + "M";
         }
         const four = e12.bands + '-' + decade.four;
-        const fourColor = four.split('-').map(color => `<div class="color" style='box-shadow: inset 0 0 0 1000px ${colors[color] || color}'></div>`).join('');
+        const fourColor = four.split('-').map(color => {
+          const col = colors[color] || color;
+          return `<div class="color" style='box-shadow: inset 0 0 0 1000px ${col}'>${color[0]}</div>`
+        }).join('');
         let five = e12.bands + '-' + decade.five;
-        if(decade.value == 10) {
-          five = 'black-' + five;
-        }
-        const fiveColor = five.split('-').map(color => `<div class="color" style='box-shadow: inset 0 0 0 1000px ${colors[color] || color}'></div>`).join('');
+        const fiveColor = five.split('-').map(color => {
+          const col = colors[color] || color;
+          return `<div class="color" style='box-shadow: inset 0 0 0 1000px ${col}'>${color[0]}</div>`
+        }).join('');
 
-        document.write(
+        table += (
           `<div class="row">` +
             `<div class="label">${value} Ω</div>` +
             `<div class="colors">${fourColor}<div class="color tolerance">T</div></div>` +
             `<div class="colors">${fiveColor}<div class="color tolerance">T</div></div>` +
           `</div>`
         );
-      }
-    }
 
-    for(const decade of decades) {
-      for(const e12 of e12s) {
-        let value = Math.round(decade.value * e12.value);
-        if(value >= 1000 && value < 1000000) {
-          value = value / 1000 + "k";
-        }
-        if(value >= 100000 && value < 10000000000) {
-          value = value / 1000000 + "M";
-        }
-        const four = e12.bands + '-' + decade.four;
-        const fourColor = four.split('-').map(color => `<div class="color" style='box-shadow: inset 0 0 0 1000px ${colors[color] || color}'></div>`).join('');
-        let five = e12.bands + '-' + decade.five;
-        if(decade.value == 10) {
-          five = 'black-' + five;
-        }
-        const fiveColor = five.split('-').map(color => `<div class="color" style='box-shadow: inset 0 0 0 1000px ${colors[color] || color}'></div>`).join('');
-
-        document.write(
+        labels += (
           `<div class="cell">` +
             `<div class="label">${value} Ω</div>` +
             `<div class="colors">${fourColor}<div class="color tolerance">T</div></div>` +
@@ -117,7 +123,10 @@
           `</div>`
         );
       }
+      table += "</div>" + clearfix;
     }
+
+    document.write(table + clearfix + labels);
   </script>
 </body>
 </html>
